@@ -2,10 +2,11 @@ const electron = require('electron');
 const {app, BrowserWindow} = electron;
 
 app.on('ready', () => {
+  const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
   console.log("ready bitch");
   let windowOptions = {
-    //width: 600,
-    //height: 400,
+    width: width,
+    height: height,
     //fullscreen: true,
     //fullscreenable: true,
     frame: false,

@@ -4,11 +4,72 @@
   </head>
   <body>
     <link rel="stylesheet" type="text/css" href="./styles/index.css">
+    <!-- <script
+      src="https://code.jquery.com/jquery-3.1.0.js"
+      integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="
+      crossorigin="anonymous">
+    </script> -->
+
+    <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <!-- normal script imports etc  -->
+    <script
+      src="https://code.jquery.com/jquery-2.2.4.js"
+      integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+      crossorigin="anonymous">
+    </script>
+    <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+
+    <!-- Insert this line after script imports -->
+    <script>if (window.module) module = window.module;</script>
+
+
     <script>
       let opacity = 1.0;
+      const electron = require('electron');
+
       require('./index.js')
 
+      $(document).ready(function () {
+        //your code here
+        init()
+      });
 
+      function tick(event) {
+          // Other stuff
+          stage.update(event);
+      }
+
+      function init() {
+        console.log("init called");
+        const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
+        // inject the canvas with the right height and width
+        $("body").append(`<canvas id='demoCanvas' width='${width}' height='${height}'></canvas>`)
+
+        let stage = new createjs.Stage("demoCanvas");
+
+        createjs.Ticker.addEventListener("tick", stage);
+
+
+        var circle = new createjs.Shape();
+        circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
+        circle.x = 100;
+        circle.y = 100;
+        var bitmap = new createjs.Bitmap('./assets/images/bfd.png');
+
+        //bitmap
+        bitmap.addEventListener("click", function(evt) {
+            // do stuff...
+            //evt.remove(); // removes this listener.
+            console.log("bitmap clicked");
+        });
+
+        console.log(bitmap);
+        stage.addChild(bitmap);
+
+        stage.update();
+      }
       function drag(event) {
         console.log("drag()");
         console.log(event);
@@ -94,8 +155,13 @@
       });
       </script>
 
+
+    <!--
     <div id="topDiv" ondrop="drop(event)" ondragover="allowDrop(event)">
       <img src="./assets/images/bfd.png" id="mainImage" draggable="true"ondragstart="drag(event)" />
     </div>
+    -->
+    <!-- <img src="./assets/images/bfd.png" id="mainImage" draggable="true"ondragstart="drag(event)" /> -->
+
   </body>
 </html>

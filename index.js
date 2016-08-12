@@ -1,4 +1,5 @@
-const remote = require('electron').remote;
+const electron = require('electron');
+const remote = electron.remote;
 const {dialog} = remote;
 //const {console} = remote
 
@@ -7,7 +8,6 @@ const main = remote.require('./main.js')
 let button = document.createElement('button');
 button.textContent = "Open Image";
 document.body.appendChild(button);
-
 
 // document.addEventListener("") = function(event) {
 //   console.log("onkeypress");
