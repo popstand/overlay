@@ -3,7 +3,7 @@
   <head>
   </head>
   <body>
-    <link rel="stylesheet" type="text/css" href="./styles/index.css">
+    <link rel="stylesheet" type="text/css" href="./index.css">
     <!-- <script
       src="https://code.jquery.com/jquery-3.1.0.js"
       integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="
@@ -30,7 +30,8 @@
       const electron = require('electron');
 
       require('./index.js')
-
+      //import OverlayImage from './OverlayImage/OverlayImage'
+      const OverlayImage = require('./OverlayImage/OverlayImage');
       $(document).ready(function () {
         //your code here
         init()
@@ -56,17 +57,11 @@
         circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
         circle.x = 100;
         circle.y = 100;
-        var bitmap = new createjs.Bitmap('./assets/images/bfd.png');
 
-        //bitmap
-        bitmap.addEventListener("click", function(evt) {
-            // do stuff...
-            //evt.remove(); // removes this listener.
-            console.log("bitmap clicked");
-        });
+        //image
+        let image = new OverlayImage();
 
-        console.log(bitmap);
-        stage.addChild(bitmap);
+        stage.addChild(image);
 
         stage.update();
       }

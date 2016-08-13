@@ -3,7 +3,7 @@ const {app, BrowserWindow} = electron;
 
 app.on('ready', () => {
   const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
-  console.log("ready bitch");
+
   let windowOptions = {
     width: width,
     height: height,
@@ -12,11 +12,11 @@ app.on('ready', () => {
     frame: false,
     transparent: true,
     title: 'Layover'
-  }
+  };
   let win = new BrowserWindow(windowOptions);
-  win.maximize();
+  //win.maximize();
 
-  win.loadURL(`file://${__dirname}/index.html`)
+  win.loadURL(`file://${__dirname}/App/Views/index.html`)
 })
 
 
