@@ -5,11 +5,19 @@
   "main": "index.js",
   "scripts": {
     "start": "electron main.js",
+    "compile": "browserify -t [ babelify --presets [ electron es2015 ] ] App/src/index.js -o App/Views/index-do-not-edit.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Kurt Braget (Popstand Inc www.popstand.com)",
   "license": "ISC",
   "dependencies": {
     "electron-prebuilt": "^1.3.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-preset-electron": "^0.37.8",
+    "babel-preset-es2015": "^6.13.2",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0"
   }
 }

@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script>
+      const electron = require('electron');
+    </script>
   </head>
   <body>
     <link rel="stylesheet" type="text/css" href="./index.css">
-    <!-- <script
-      src="https://code.jquery.com/jquery-3.1.0.js"
-      integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="
-      crossorigin="anonymous">
-    </script> -->
 
     <!-- Insert this line above script imports  -->
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
@@ -25,130 +23,9 @@
     <script>if (window.module) module = window.module;</script>
 
 
-    <script>
-      let opacity = 1.0;
-      const electron = require('electron');
-
-      require('./index.js')
-      //import OverlayImage from './OverlayImage/OverlayImage'
-      const OverlayImage = require('./OverlayImage/OverlayImage');
-      $(document).ready(function () {
-        //your code here
-        init()
-      });
-
-      function tick(event) {
-          // Other stuff
-          stage.update(event);
-      }
-
-      function init() {
-        console.log("init called");
-        const {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
-        // inject the canvas with the right height and width
-        $("body").append(`<canvas id='demoCanvas' width='${width}' height='${height}'></canvas>`)
-
-        let stage = new createjs.Stage("demoCanvas");
-
-        createjs.Ticker.addEventListener("tick", stage);
-
-
-        var circle = new createjs.Shape();
-        circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
-        circle.x = 100;
-        circle.y = 100;
-
-        //image
-        let image = new OverlayImage();
-
-        stage.addChild(image);
-
-        stage.update();
-      }
-      function drag(event) {
-        console.log("drag()");
-        console.log(event);
-        event.dataTransfer.setData("text", event.target.id);
-        //let screenX = event.screenX;
-        //let screenY = event.screenY
-
-        //document.getElementById("mainImage").style.top = screenY + "px";
-        //document.getElementById("mainImage").style.left = screenX + "px";
-      }
-
-
-      function drop(event) {
-        event.preventDefault();
-        console.log("drop()");
-        console.log(event);
-
-        let screenX = event.screenX;
-        let screenY = event.screenY
-
-        document.getElementById("mainImage").style.top = screenY + "px";
-        document.getElementById("mainImage").style.left = screenX + "px";
-      }
-
-      function allowDrop(event) {
-        event.preventDefault();
-        // console.log("allowDrop()");
-        // console.log(event);
-      }
-
-
-      document.body.addEventListener('keydown', function(e) {
-        console.log('keydown:' + e.keyCode)
-        let el = document.getElementById("mainImage");
-        let rect = el.getBoundingClientRect();
-        console.log(rect.top, rect.right, rect.bottom, rect.left);
-        console.log(el.style.top);
-        //let t = document.getElementById("mainImage").style.top;
-        //let l = document.getElementById("mainImage").style.left;
-         //= screenY + "px";
-         //el.style.top = rect.top + 5 + "px";
-         //l = l + 5; //= screenX + "px";
-
-        let left = 37;
-        let up = 38;
-        let right = 39;
-        let down = 40;
-        let minus = 189;
-        let plus = 187;
-
-        console.log("opacity", opacity);
-        //let opacity = 1.0;
-         switch (e.keyCode) {
-           case left:
-             el.style.left = "" + (rect.left - 5) + "px";
-             break;
-           case up:
-             el.style.top = "" + (rect.top - 5) + "px";
-             break;
-           case down:
-             el.style.top = "" + (rect.top + 5) + "px";
-             break;
-           case right:
-             el.style.left = "" + (rect.left + 5) + "px";
-             break
-          case plus:
-            if (opacity < 1) {
-                opacity = opacity + 0.1;
-                el.style.opacity = "" + opacity;
-            }
-            break;
-          case minus:
-            if(opacity > 0) {
-              opacity = opacity - 0.1;
-              el.style.opacity = "" + opacity;
-            }
-            break;
-
-           default:
-             console.log("keycode not handled");
-             break;
-         }
-      });
-      </script>
+    <script
+      src="./index-do-not-edit.js">
+    </script>
 
 
     <!--

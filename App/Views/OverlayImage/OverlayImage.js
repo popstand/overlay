@@ -1,30 +1,30 @@
-const bitmap = new createjs.Bitmap('../../Assets/images/bfd.png');
 
-
-class OverlayImage extends createjs.Container {
+export default class OverlayImage extends createjs.Container {
 
   constructor() {
-    this.super();
+    super();
+
+    this.bitmap = new createjs.Bitmap('../Assets/Images/bfd.png');
+    this.selected = false;
 
     this.render();
   }
 
   render() {
-
-    this.addChild(bitmap);
+    this.addChild(this.bitmap);
     this.addListeners();
-    console.log(bitmap);
+    console.log(this.bitmap);
   }
 
   addListeners() {
     this.on("click", function(event) {
         // do stuff...
         //evt.remove(); // removes this listener.
-        console.log("bitmap clicked");
+        console.log("overlay clicked");
     });
 
     this.on("mousedown", function(event) {
-      console.log("bitmap mouse down", event);
+      console.log("overlay mouse down", event);
     })
 
     this.on("pressmove", function(event) {
@@ -36,5 +36,5 @@ class OverlayImage extends createjs.Container {
   }
 
 }
-
+// tack on the methods of Containere to OverlayImage
 export default createjs.promote(OverlayImage, "Container")
