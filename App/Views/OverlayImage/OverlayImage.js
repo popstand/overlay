@@ -75,6 +75,11 @@ export default class OverlayImage extends createjs.Container {
 
     this.removeBorder();
   }
+
+  setAlpha(_alpha) {
+    console.log("setAlpha", _alpha);
+    this.getBitmap().alpha = _alpha;
+  }
   // changeOpacity(level) {
   //   this._bitmap.alpha = level;
   // }

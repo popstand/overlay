@@ -106,6 +106,12 @@ var OverlayImage = function (_createjs$Container) {
 
       this.removeBorder();
     }
+  }, {
+    key: "setAlpha",
+    value: function setAlpha(_alpha) {
+      console.log("setAlpha", _alpha);
+      this.getBitmap().alpha = _alpha;
+    }
     // changeOpacity(level) {
     //   this._bitmap.alpha = level;
     // }
@@ -171,6 +177,8 @@ var opacity = 1.0;
 
 console.log(_OverlayImage2.default);
 
+var overlay = void 0;
+
 function init() {
   console.log("init called");
   var _electron$screen$getP = electron.screen.getPrimaryDisplay().workAreaSize;
@@ -187,69 +195,70 @@ function init() {
   createjs.Ticker.addEventListener("tick", stage);
 
   //image
-  var image = new _OverlayImage2.default();
+  var overlay = new _OverlayImage2.default();
 
-  stage.addChild(image);
+  stage.addChild(overlay);
 
   stage.update();
 
   console.log("after update");
-  // document.body.addEventListener('keydown', function(e) {
-  //   console.log('keydown:' + e.keyCode)
-  //   let el = document.getElementById("mainImage");
-  //
-  //   // leave if el is null
-  //   if (el == null) return;
-  //
-  //   let rect = el.getBoundingClientRect();
-  //   console.log(rect.top, rect.right, rect.bottom, rect.left);
-  //   console.log(el.style.top);
-  //   //let t = document.getElementById("mainImage").style.top;
-  //   //let l = document.getElementById("mainImage").style.left;
-  //    //= screenY + "px";
-  //    //el.style.top = rect.top + 5 + "px";
-  //    //l = l + 5; //= screenX + "px";
-  //
-  //   let left = 37;
-  //   let up = 38;
-  //   let right = 39;
-  //   let down = 40;
-  //   let minus = 189;
-  //   let plus = 187;
-  //
-  //   console.log("opacity", opacity);
-  //   //let opacity = 1.0;
-  //    switch (e.keyCode) {
-  //      case left:
-  //        el.style.left = "" + (rect.left - 5) + "px";
-  //        break;
-  //      case up:
-  //        el.style.top = "" + (rect.top - 5) + "px";
-  //        break;
-  //      case down:
-  //        el.style.top = "" + (rect.top + 5) + "px";
-  //        break;
-  //      case right:
-  //        el.style.left = "" + (rect.left + 5) + "px";
-  //        break
-  //     case plus:
-  //       if (opacity < 1) {
-  //           opacity = opacity + 0.1;
-  //           el.style.opacity = "" + opacity;
-  //       }
-  //       break;
-  //     case minus:
-  //       if(opacity > 0) {
-  //         opacity = opacity - 0.1;
-  //         el.style.opacity = "" + opacity;
-  //       }
-  //       break;
-  //
-  //      default:
-  //        console.log("keycode not handled");
-  //        break;
-  //    }
-  // });
+
+  document.body.addEventListener('keydown', function (e) {
+    console.log('keydown:' + e.keyCode);
+    //let el = document.getElementById("mainImage");
+
+    // leave if el is null
+    //if (el == null) return;
+
+    //let rect = el.getBoundingClientRect();
+    //console.log(rect.top, rect.right, rect.bottom, rect.left);
+    //console.log(el.style.top);
+    //let t = document.getElementById("mainImage").style.top;
+    //let l = document.getElementById("mainImage").style.left;
+    //= screenY + "px";
+    //el.style.top = rect.top + 5 + "px";
+    //l = l + 5; //= screenX + "px";
+
+    var left = 37;
+    var up = 38;
+    var right = 39;
+    var down = 40;
+    var minus = 189;
+    var plus = 187;
+
+    console.log("opacity", opacity);
+    //let opacity = 1.0;
+    switch (e.keyCode) {
+      case left:
+        overlay.x = overlay.x - 5;
+        break;
+      case up:
+        overlay.y = overlay.y - 5;
+        break;
+      case down:
+        overlay.y = overlay.y + 5;
+        break;
+      case right:
+        overlay.x = overlay.x + 5;
+        break;
+      case plus:
+        if (opacity < 1) {
+          opacity = opacity + 0.1;
+          overlay.setAlpha(opacity);
+        }
+        break;
+      case minus:
+        if (opacity > 0) {
+          opacity = opacity - 0.1;
+          overlay.setAlpha(opacity);
+        }
+        break;
+
+      default:
+        console.log("keycode not handled");
+        break;
+    }
+  });
 }
 
 function tick(event) {
