@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "electron main.js",
-    "compile": "browserify -t [ babelify --presets [ electron es2015 ] ] App/src/index.js -o App/Views/index-do-not-edit.js",
+    "compile": "browserify -t [ babelify --presets [ electron es2015 ] ] App/src/index.js -o App/Views/index-do-not-edit.js && electron main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Kurt Braget (Popstand Inc www.popstand.com)",

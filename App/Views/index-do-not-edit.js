@@ -21,8 +21,14 @@ var OverlayImage = function (_createjs$Container) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(OverlayImage).call(this));
 
-    _this.bitmap = new createjs.Bitmap('../Assets/Images/bfd.png');
-    _this.selected = false;
+    console.log("OverlayImage constructor");
+    _this._bitmap = new createjs.Bitmap('../Assets/Images/bfd.png');
+    //this._bitmap.x = 0;
+    //this._bitmap.y = 0;
+    _this._selected = false;
+    _this._border = null;
+
+    _this.mouseChildren = false;
 
     _this.render();
     return _this;
@@ -31,9 +37,30 @@ var OverlayImage = function (_createjs$Container) {
   _createClass(OverlayImage, [{
     key: "render",
     value: function render() {
-      this.addChild(this.bitmap);
+      console.log("OverlayImage render");
+      this.addChild(this.getBitmap());
       this.addListeners();
-      console.log(this.bitmap);
+      //console.log(this.bitmap);
+    }
+  }, {
+    key: "getSelected",
+    value: function getSelected() {
+      return this._selected;
+    }
+  }, {
+    key: "setSelected",
+    value: function setSelected(_trueOrFalse) {
+      this._selected = _trueOrFalse;
+    }
+  }, {
+    key: "getBitmap",
+    value: function getBitmap() {
+      return this._bitmap;
+    }
+  }, {
+    key: "setBitmap",
+    value: function setBitmap(_bitmap) {
+      this._bitmap = _bitmap;
     }
   }, {
     key: "addListeners",
@@ -42,6 +69,11 @@ var OverlayImage = function (_createjs$Container) {
         // do stuff...
         //evt.remove(); // removes this listener.
         console.log("overlay clicked");
+        if (this.getSelected()) {
+          this.undoSelection();
+        } else {
+          this.doSelection();
+        }
       });
 
       this.on("mousedown", function (event) {
@@ -56,6 +88,60 @@ var OverlayImage = function (_createjs$Container) {
       this.on("pressup", function (evt) {
         console.log("up");
       });
+    }
+  }, {
+    key: "doSelection",
+    value: function doSelection() {
+      console.log("doSelection()");
+      this.setSelected(true);
+
+      // draw a border around this shit show it was selected
+      this.addBorder();
+    }
+  }, {
+    key: "undoSelection",
+    value: function undoSelection() {
+      console.log("undoSelection()");
+      this.setSelected(false);
+
+      this.removeBorder();
+    }
+    // changeOpacity(level) {
+    //   this._bitmap.alpha = level;
+    // }
+
+  }, {
+    key: "addBorder",
+    value: function addBorder() {
+      console.log("drawBorder");
+      var rect = new createjs.Shape();
+      rect.graphics.beginStroke("red");
+      rect.graphics.setStrokeStyle(5);
+      var bm = this.getBitmap();
+      console.log(bm.getBounds());
+      var bounds = bm.getBounds();
+      rect.graphics.drawRect(0, 0, bounds.width, bounds.height);
+      //rect.x = 0;
+      //rect.y = 0;
+      this.setBorder(rect);
+
+      this.addChild(this.getBorder());
+    }
+  }, {
+    key: "removeBorder",
+    value: function removeBorder() {
+      console.log("removeBorder");
+      this.removeChild(this.getBorder());
+    }
+  }, {
+    key: "setBorder",
+    value: function setBorder(_border) {
+      this._border = _border;
+    }
+  }, {
+    key: "getBorder",
+    value: function getBorder() {
+      return this._border;
     }
   }]);
 
@@ -106,6 +192,64 @@ function init() {
   stage.addChild(image);
 
   stage.update();
+
+  console.log("after update");
+  // document.body.addEventListener('keydown', function(e) {
+  //   console.log('keydown:' + e.keyCode)
+  //   let el = document.getElementById("mainImage");
+  //
+  //   // leave if el is null
+  //   if (el == null) return;
+  //
+  //   let rect = el.getBoundingClientRect();
+  //   console.log(rect.top, rect.right, rect.bottom, rect.left);
+  //   console.log(el.style.top);
+  //   //let t = document.getElementById("mainImage").style.top;
+  //   //let l = document.getElementById("mainImage").style.left;
+  //    //= screenY + "px";
+  //    //el.style.top = rect.top + 5 + "px";
+  //    //l = l + 5; //= screenX + "px";
+  //
+  //   let left = 37;
+  //   let up = 38;
+  //   let right = 39;
+  //   let down = 40;
+  //   let minus = 189;
+  //   let plus = 187;
+  //
+  //   console.log("opacity", opacity);
+  //   //let opacity = 1.0;
+  //    switch (e.keyCode) {
+  //      case left:
+  //        el.style.left = "" + (rect.left - 5) + "px";
+  //        break;
+  //      case up:
+  //        el.style.top = "" + (rect.top - 5) + "px";
+  //        break;
+  //      case down:
+  //        el.style.top = "" + (rect.top + 5) + "px";
+  //        break;
+  //      case right:
+  //        el.style.left = "" + (rect.left + 5) + "px";
+  //        break
+  //     case plus:
+  //       if (opacity < 1) {
+  //           opacity = opacity + 0.1;
+  //           el.style.opacity = "" + opacity;
+  //       }
+  //       break;
+  //     case minus:
+  //       if(opacity > 0) {
+  //         opacity = opacity - 0.1;
+  //         el.style.opacity = "" + opacity;
+  //       }
+  //       break;
+  //
+  //      default:
+  //        console.log("keycode not handled");
+  //        break;
+  //    }
+  // });
 }
 
 function tick(event) {
@@ -113,62 +257,6 @@ function tick(event) {
   stage.update(event);
 }
 
-// document.body.addEventListener('keydown', function(e) {
-//   console.log('keydown:' + e.keyCode)
-//   let el = document.getElementById("mainImage");
-//
-//   // leave if el is null
-//   if (el == null) return;
-//
-//   let rect = el.getBoundingClientRect();
-//   console.log(rect.top, rect.right, rect.bottom, rect.left);
-//   console.log(el.style.top);
-//   //let t = document.getElementById("mainImage").style.top;
-//   //let l = document.getElementById("mainImage").style.left;
-//    //= screenY + "px";
-//    //el.style.top = rect.top + 5 + "px";
-//    //l = l + 5; //= screenX + "px";
-//
-//   let left = 37;
-//   let up = 38;
-//   let right = 39;
-//   let down = 40;
-//   let minus = 189;
-//   let plus = 187;
-//
-//   console.log("opacity", opacity);
-//   //let opacity = 1.0;
-//    switch (e.keyCode) {
-//      case left:
-//        el.style.left = "" + (rect.left - 5) + "px";
-//        break;
-//      case up:
-//        el.style.top = "" + (rect.top - 5) + "px";
-//        break;
-//      case down:
-//        el.style.top = "" + (rect.top + 5) + "px";
-//        break;
-//      case right:
-//        el.style.left = "" + (rect.left + 5) + "px";
-//        break
-//     case plus:
-//       if (opacity < 1) {
-//           opacity = opacity + 0.1;
-//           el.style.opacity = "" + opacity;
-//       }
-//       break;
-//     case minus:
-//       if(opacity > 0) {
-//         opacity = opacity - 0.1;
-//         el.style.opacity = "" + opacity;
-//       }
-//       break;
-//
-//      default:
-//        console.log("keycode not handled");
-//        break;
-//    }
-// });
 //const {console} = remote
 
 //const main = remote.require('../../main.js')
