@@ -14,6 +14,8 @@ app.on('ready', () => {
     title: 'Layover'
   };
   let win = new BrowserWindow(windowOptions);
+
+  win.setAlwaysOnTop(false)
   //win.maximize();
 
   win.loadURL(`file://${__dirname}/App/Views/index.html`)

@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -12,6 +12,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var selectedColor = '#FF0000';
 
 var OverlayImage = function (_createjs$Container) {
   _inherits(OverlayImage, _createjs$Container);
@@ -26,16 +28,21 @@ var OverlayImage = function (_createjs$Container) {
     //this._bitmap.x = 0;
     //this._bitmap.y = 0;
     _this._selected = false;
-    _this._border = null;
+    _this._border = _this.createBorder();
+    //this._handle = this.createHandle();
 
-    _this.mouseChildren = false;
+    // this is needed because the above bitmap is still null at this point
+    // so it's better to wait a bit then set widths based on the image
+    setTimeout(_this.refreshElements.bind(_this), 1000);
+
+    //this.mouseChildren = false;
 
     _this.render();
     return _this;
   }
 
   _createClass(OverlayImage, [{
-    key: "render",
+    key: 'render',
     value: function render() {
       console.log("OverlayImage render");
       this.addChild(this.getBitmap());
@@ -43,27 +50,7 @@ var OverlayImage = function (_createjs$Container) {
       //console.log(this.bitmap);
     }
   }, {
-    key: "getSelected",
-    value: function getSelected() {
-      return this._selected;
-    }
-  }, {
-    key: "setSelected",
-    value: function setSelected(_trueOrFalse) {
-      this._selected = _trueOrFalse;
-    }
-  }, {
-    key: "getBitmap",
-    value: function getBitmap() {
-      return this._bitmap;
-    }
-  }, {
-    key: "setBitmap",
-    value: function setBitmap(_bitmap) {
-      this._bitmap = _bitmap;
-    }
-  }, {
-    key: "addListeners",
+    key: 'addListeners',
     value: function addListeners() {
       this.on("click", function (event) {
         // do stuff...
@@ -88,26 +75,30 @@ var OverlayImage = function (_createjs$Container) {
       this.on("pressup", function (evt) {
         console.log("up");
       });
+
+      var handle = this.getHandle();
     }
   }, {
-    key: "doSelection",
+    key: 'doSelection',
     value: function doSelection() {
       console.log("doSelection()");
       this.setSelected(true);
 
       // draw a border around this shit show it was selected
-      this.addBorder();
+      this.addChild(this.getBorder());
+      this.addChild(this.getHandle());
     }
   }, {
-    key: "undoSelection",
+    key: 'undoSelection',
     value: function undoSelection() {
       console.log("undoSelection()");
       this.setSelected(false);
 
-      this.removeBorder();
+      this.removeChild(this.getBorder());
+      this.removeChild(this.getHandle());
     }
   }, {
-    key: "setAlpha",
+    key: 'setAlpha',
     value: function setAlpha(_alpha) {
       console.log("setAlpha", _alpha);
       this.getBitmap().alpha = _alpha;
@@ -117,37 +108,87 @@ var OverlayImage = function (_createjs$Container) {
     // }
 
   }, {
-    key: "addBorder",
-    value: function addBorder() {
-      console.log("drawBorder");
+    key: 'createBorder',
+    value: function createBorder() {
       var rect = new createjs.Shape();
-      rect.graphics.beginStroke("red");
+      rect.graphics.beginStroke(selectedColor);
       rect.graphics.setStrokeStyle(5);
       var bm = this.getBitmap();
-      console.log(bm.getBounds());
+      console.log(bm);
       var bounds = bm.getBounds();
-      rect.graphics.drawRect(0, 0, bounds.width, bounds.height);
-      //rect.x = 0;
-      //rect.y = 0;
-      this.setBorder(rect);
+      console.log(bounds);
+      rect.graphics.drawRect(0, 0, 100, 100);
 
-      this.addChild(this.getBorder());
+      return rect;
     }
   }, {
-    key: "removeBorder",
-    value: function removeBorder() {
-      console.log("removeBorder");
-      this.removeChild(this.getBorder());
+    key: 'createHandle',
+    value: function createHandle() {
+      var handle = new createjs.Shape();
+      handle.graphics.beginFill(selectedColor);
+      handle.graphics.drawCircle(0, 0, 10);
+      //handle.x = this.getBitmap().getBounds().width
+
+      return handle;
     }
   }, {
-    key: "setBorder",
+    key: 'refreshElements',
+    value: function refreshElements() {
+      // make sure the border is the right size
+      var border = this.getBorder();
+      var bounds = this.getBitmap().getBounds();
+      border.graphics.clear();
+      border.graphics.beginStroke(selectedColor);
+      border.graphics.setStrokeStyle(5);
+      border.graphics.drawRect(0, 0, bounds.width, bounds.height);
+      border.height = bounds.height;
+
+      // handle
+      var handle = this.getHandle();
+      handle.x = bounds.width;
+    }
+
+    // getters setters
+
+  }, {
+    key: 'setHandle',
+    value: function setHandle(_handle) {
+      this._handle = _handle;
+    }
+  }, {
+    key: 'getHandle',
+    value: function getHandle() {
+      return this._handle;
+    }
+  }, {
+    key: 'setBorder',
     value: function setBorder(_border) {
       this._border = _border;
     }
   }, {
-    key: "getBorder",
+    key: 'getBorder',
     value: function getBorder() {
       return this._border;
+    }
+  }, {
+    key: 'getSelected',
+    value: function getSelected() {
+      return this._selected;
+    }
+  }, {
+    key: 'setSelected',
+    value: function setSelected(_trueOrFalse) {
+      this._selected = _trueOrFalse;
+    }
+  }, {
+    key: 'getBitmap',
+    value: function getBitmap() {
+      return this._bitmap;
+    }
+  }, {
+    key: 'setBitmap',
+    value: function setBitmap(_bitmap) {
+      this._bitmap = _bitmap;
     }
   }]);
 

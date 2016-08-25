@@ -1,3 +1,5 @@
+let selectedColor = '#FF0000';
+
 export default class OverlayImage extends createjs.Container {
 
   constructor() {
@@ -7,9 +9,14 @@ export default class OverlayImage extends createjs.Container {
     //this._bitmap.x = 0;
     //this._bitmap.y = 0;
     this._selected = false;
-    this._border = null;
+    this._border = this.createBorder();
+    //this._handle = this.createHandle();
 
-    this.mouseChildren = false;
+    // this is needed because the above bitmap is still null at this point
+    // so it's better to wait a bit then set widths based on the image
+    setTimeout(this.refreshElements.bind(this), 1000)
+
+    //this.mouseChildren = false;
 
     this.render();
   }
@@ -19,22 +26,6 @@ export default class OverlayImage extends createjs.Container {
     this.addChild(this.getBitmap());
     this.addListeners();
     //console.log(this.bitmap);
-  }
-
-  getSelected() {
-    return this._selected;
-  }
-
-  setSelected(_trueOrFalse) {
-    this._selected = _trueOrFalse;
-  }
-
-  getBitmap() {
-    return this._bitmap
-  }
-
-  setBitmap(_bitmap) {
-    this._bitmap = _bitmap
   }
 
   addListeners() {
@@ -59,6 +50,9 @@ export default class OverlayImage extends createjs.Container {
     });
 
     this.on("pressup", function(evt) { console.log("up"); })
+
+    let handle = this.getHandle()
+
   }
 
   doSelection() {
@@ -66,14 +60,16 @@ export default class OverlayImage extends createjs.Container {
     this.setSelected(true);
 
     // draw a border around this shit show it was selected
-    this.addBorder();
+    this.addChild(this.getBorder());
+    this.addChild(this.getHandle());
   }
 
   undoSelection() {
     console.log("undoSelection()");
     this.setSelected(false);
 
-    this.removeBorder();
+    this.removeChild(this.getBorder());
+    this.removeChild(this.getHandle());
   }
 
   setAlpha(_alpha) {
@@ -84,25 +80,52 @@ export default class OverlayImage extends createjs.Container {
   //   this._bitmap.alpha = level;
   // }
 
-  addBorder() {
-    console.log("drawBorder");
+  createBorder() {
     let rect = new createjs.Shape();
-    rect.graphics.beginStroke("red");
+    rect.graphics.beginStroke(selectedColor);
     rect.graphics.setStrokeStyle(5);
     let bm = this.getBitmap();
-    console.log(bm.getBounds());
+    console.log(bm);
     let bounds = bm.getBounds();
-    rect.graphics.drawRect(0, 0, bounds.width, bounds.height);
-    //rect.x = 0;
-    //rect.y = 0;
-    this.setBorder(rect);
+    console.log(bounds);
+    rect.graphics.drawRect(0, 0, 100, 100);
 
-    this.addChild(this.getBorder())
+    return rect;
   }
 
-  removeBorder() {
-    console.log("removeBorder");
-    this.removeChild(this.getBorder())
+
+  createHandle() {
+    let handle = new createjs.Shape();
+    handle.graphics.beginFill(selectedColor);
+    handle.graphics.drawCircle(0, 0, 10);
+    //handle.x = this.getBitmap().getBounds().width
+
+    return handle;
+  }
+
+  refreshElements() {
+    // make sure the border is the right size
+    let border = this.getBorder();
+    let bounds = this.getBitmap().getBounds();
+    border.graphics.clear();
+    border.graphics.beginStroke(selectedColor);
+    border.graphics.setStrokeStyle(5)
+    border.graphics.drawRect(0,0,bounds.width,bounds.height);
+    border.height = bounds.height
+
+    // handle
+    let handle = this.getHandle()
+    handle.x = bounds.width
+  }
+
+  // getters setters
+
+  setHandle(_handle) {
+    this._handle = _handle;
+  }
+
+  getHandle() {
+    return this._handle;
   }
 
   setBorder(_border) {
@@ -110,7 +133,23 @@ export default class OverlayImage extends createjs.Container {
   }
 
   getBorder() {
-    return this._border
+    return this._border;
+  }
+
+  getSelected() {
+    return this._selected;
+  }
+
+  setSelected(_trueOrFalse) {
+    this._selected = _trueOrFalse;
+  }
+
+  getBitmap() {
+    return this._bitmap
+  }
+
+  setBitmap(_bitmap) {
+    this._bitmap = _bitmap
   }
 
 }
